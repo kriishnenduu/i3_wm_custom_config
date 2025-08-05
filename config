@@ -1,0 +1,75 @@
+sudo apt install i3 i3status rofi feh dunst lxappearance fonts-dejavu
+
+bindsym $mod+d exec rofi -show drun
+
+sudo apt install pcmanfm
+
+
+
+
+feh --bg-scale ~/Pictures/wall.jpg
+nano ~/.config/i3/config 
+
+exec --no-startup-id feh --bg-scale ~/Pictures/wall.jpg
+Mod + Shift + C
+
+
+bindsym $mod+f exec pcmanfm
+Mod + Shift + C
+
+mkdir -p ~/.config/i3/scripts
+nano ~/.config/i3/scripts/workspace_cycle.c
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_WORKSPACES 20
+#define MAX_COMMAND 512
+#define MAX_LINE 4096
+
+int main() {
+    FILE *fp;
+    char path[MAX_LINE];
+    int current = 1;
+    char *cmd = "i3-msg -t get_workspaces";
+    char *workspace_cmd = malloc(MAX_COMMAND);
+
+    if ((fp = popen(cmd, "r")) == NULL) {
+        perror("Failed to run i3-msg");
+        return 1;
+    }
+
+    while (fgets(path, sizeof(path), fp) != NULL) {
+        char *focused = strstr(path, "\"focused\":true");
+        if (focused) {
+            char *num_ptr = strstr(path, "\"num\":");
+            if (num_ptr) {
+                current = atoi(num_ptr + 6);
+                break;
+            }
+        }
+    }
+
+    pclose(fp);
+
+    // Set max workspace number here
+    int max_workspace = 10;
+    int next = current + 1;
+    if (next > max_workspace) next = 1;
+
+    snprintf(workspace_cmd, MAX_COMMAND, "i3-msg workspace number %d", next);
+    system(workspace_cmd);
+    free(workspace_cmd);
+
+    return 0;
+}
+
+
+gcc ~/.config/i3/scripts/workspace_cycle.c -o ~/.config/i3/scripts/workspace_cycle
+sudo apt install build-essential
+
+nano ~/.config/i3/config
+bindsym Mod1+Tab exec ~/.config/i3/scripts/workspace_cycle
+Mod + Shift + R
+
