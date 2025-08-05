@@ -1,5 +1,10 @@
 sudo apt install i3 i3status rofi feh dunst lxappearance fonts-dejavu
 
+sudo apt purge xfce4 xfce4-* xfwm4 xfdesktop4 xfconf xfce4-session xfce4-settings thunar* 
+sudo apt autoremove
+
+
+
 bindsym $mod+d exec rofi -show drun
 
 sudo apt install pcmanfm
