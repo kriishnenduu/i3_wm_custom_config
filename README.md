@@ -1,0 +1,1 @@
+# i3_wm_custom_config
